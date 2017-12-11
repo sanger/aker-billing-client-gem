@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    aker-billing-facade-client (0.1.0)
+    aker-billing-facade-client (0.1.2)
       faraday
 
 GEM

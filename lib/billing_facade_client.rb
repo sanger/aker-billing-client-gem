@@ -2,6 +2,8 @@ require 'faraday'
 require 'bigdecimal'
 
 module BillingFacadeClient
+  SPLIT_CHARACTER = '-'
+  
   autoload :CostCodeValidator, 'billing_facade_client/cost_code_validator'
 
   def self.site=(url)
