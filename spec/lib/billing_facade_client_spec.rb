@@ -135,7 +135,7 @@ RSpec.describe('BillingFacadeClient') do
   end
   context '#validate_cost_code?' do
     it 'validates using the url' do
-      expect(BillingFacadeClient).to receive(:validate_single_value).with('/accounts/cost1/verify')
+      expect(BillingFacadeClient).to receive(:validate_single_value).with('/subaccountcodes/cost1/verify')
       BillingFacadeClient.validate_cost_code?('cost1')
     end    
   end

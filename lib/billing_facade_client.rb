@@ -2,6 +2,8 @@ require 'faraday'
 require 'bigdecimal'
 
 module BillingFacadeClient
+  autoload :CostCodeValidator, 'billing_facade_client/cost_code_validator'
+
   def self.site=(url)
     @site = url
   end
@@ -48,12 +50,18 @@ module BillingFacadeClient
     end
   end
 
+  def self.get_sub_cost_codes(cost_code)
+    r = connection.get("/accounts/#{cost_code}/subaccountcodes")
+    response = JSON.parse(r.body, symbolize_names: true)
+    return response[:subCostCodes]
+  end
+
   def self.validate_product_name?(product_name)
     validate_single_value("/products/#{product_name}/verify")
   end
 
   def self.validate_cost_code?(cost_code)
-    validate_single_value("/accounts/#{cost_code}/verify")
+    validate_single_value("/subaccountcodes/#{cost_code}/verify")
   end
 
   def self.filter_invalid_cost_codes(cost_codes)
