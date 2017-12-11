@@ -2,7 +2,7 @@ module BillingFacadeClient
   class CostCodeValidator < ActiveModel::Validator
     SPLIT_CHARACTER = '-'
 
-    COST_CODE_REGEXP_STR = "\AS[\d]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[\d]{1,2}){0,1}\z"
+    COST_CODE_REGEXP_STR = "\\AS[\\d]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[0-9]{1,2}){0,1}\\z"
 
     def cost_code_regexp
       @cost_code_regexp ||= Regexp.new(COST_CODE_REGEXP_STR)
