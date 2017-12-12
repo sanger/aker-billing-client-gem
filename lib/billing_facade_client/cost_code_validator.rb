@@ -2,15 +2,19 @@ module BillingFacadeClient
   class CostCodeValidator < ActiveModel::Validator
     SPLIT_CHARACTER = '-'
 
-    COST_CODE_REGEXP_STR = "\\AS[\\d]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[0-9]{1,2}){0,1}\\z"
+    COST_CODE_REGEXP_STR = "\\AS[0-9]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[0-9]{1,2})?\\z"
 
     def cost_code_regexp
       @cost_code_regexp ||= Regexp.new(COST_CODE_REGEXP_STR)
     end
 
+    def validate_with_regexp?(cost_code)
+      !cost_code.match(cost_code_regexp).nil?
+    end
+
     def validate(record)
       if (record.cost_code)
-        unless record.cost_code.match(cost_code_regexp)
+        unless validate_with_regexp?(record.cost_code)
           record.errors[:cost_code] << 'must be a valid project or subproject cost code'
           return
         end
