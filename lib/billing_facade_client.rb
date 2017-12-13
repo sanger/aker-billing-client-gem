@@ -2,6 +2,8 @@ require 'faraday'
 require 'bigdecimal'
 
 module BillingFacadeClient
+  autoload :ProjectCostCodeValidator, 'billing_facade_client/project_cost_code_validator'
+  autoload :SubprojectCostCodeValidator, 'billing_facade_client/subproject_cost_code_validator'  
   autoload :CostCodeValidator, 'billing_facade_client/cost_code_validator'
 
   def self.site=(url)
