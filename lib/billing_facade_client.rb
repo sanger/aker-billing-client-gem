@@ -3,7 +3,7 @@ require 'bigdecimal'
 
 module BillingFacadeClient
   autoload :ProjectCostCodeValidator, 'billing_facade_client/project_cost_code_validator'
-  autoload :SubprojectCostCodeValidator, 'billing_facade_client/subproject_cost_code_validator'  
+  autoload :SubprojectCostCodeValidator, 'billing_facade_client/subproject_cost_code_validator'
   autoload :CostCodeValidator, 'billing_facade_client/cost_code_validator'
 
   def self.site=(url)
@@ -14,7 +14,7 @@ module BillingFacadeClient
     @site
   end
 
-  @site = ENV['BILLING_FACADE_URL']  
+  @site = ENV['BILLING_FACADE_URL']
 
   def self.send_event(work_order, name)
     r = connection.post("/events", {eventName: name, workOrderId: work_order.id}.to_json)
@@ -50,6 +50,12 @@ module BillingFacadeClient
     else
       return nil
     end
+  end
+
+  def self.validate_process_module_name(module_name)
+    r = connection.get("/modules/#{module_name}/verifyname")
+    response = JSON.parse(r.body, symbolize_names: true)
+    return response[:verified]
   end
 
   def self.get_sub_cost_codes(cost_code)
