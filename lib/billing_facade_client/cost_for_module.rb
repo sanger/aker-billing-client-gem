@@ -7,6 +7,7 @@ module BillingFacadeClient
     # - The Price obtained is a valid numeric value
     def validate_response_cost_for_module_name(response, product_name, module_name, cost_code)
       !!((response) && (!response[:errors]) && 
+        (response[:product] == product_name) &&
         (response[:cost_code] == cost_code) && (response[:module] == module_name) &&
         (price_is_valid?(response[:price])))
     end

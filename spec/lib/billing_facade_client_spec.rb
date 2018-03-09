@@ -16,14 +16,21 @@ RSpec.describe('BillingFacadeClient') do
     let(:product_name) { 'product'}
     let(:module_name) { 'module name'}
     let(:cost_code) { 'a cost code'}
+    let(:product_name) { 'a product name' }
     context '#validate_response_cost_for_module_name' do
+      it 'returns false if the program do not match' do
+        response = { cost_code: cost_code, 'product': 'random', 'module': module_name}
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+          product_name, module_name, cost_code)).to eq(false)
+      end
+
       it 'returns false if the cost code do not match' do
-        response = { cost_code: 'random'}
+        response = { cost_code: 'random', 'product': product_name, 'module': module_name}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           product_name, module_name, cost_code)).to eq(false)
       end
       it 'returns false if the module name do not match' do
-        response = { 'module': 'random'}
+        response = { 'module': 'random', 'product': product_name, cost_code: cost_code}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           product_name, module_name, cost_code)).to eq(false)        
       end
@@ -33,17 +40,17 @@ RSpec.describe('BillingFacadeClient') do
           product_name, module_name, cost_code)).to eq(false)
       end
       it 'returns false if the response does not have a price' do
-        response = { cost_code: cost_code, 'module': module_name }
+        response = { cost_code: cost_code, 'module': module_name,  'product': product_name }
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           product_name, module_name, cost_code)).to eq(false)
       end
       it 'returns false if the price does not have the right format' do
-        response = { cost_code: cost_code, 'module': module_name, price: '1234abc'}
+        response = { cost_code: cost_code, 'module': module_name, price: '1234abc', 'product': product_name}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           product_name, module_name, cost_code)).to eq(false)
       end      
       it 'returns true in other cases' do
-        response = { cost_code: cost_code, 'module': module_name, price: '1234'}
+        response = { cost_code: cost_code, 'module': module_name, price: '1234', 'product': product_name}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           product_name, module_name, cost_code)).to eq(true)
       end
