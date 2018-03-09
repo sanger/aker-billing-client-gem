@@ -1,8 +1,12 @@
 require 'faraday'
 require 'bigdecimal'
 
+require 'billing_facade_client/cost_for_module'
+
 module BillingFacadeClient
   autoload :CostCodeValidator, 'billing_facade_client/cost_code_validator'
+  
+  extend CostForModule
 
   def self.site=(url)
     @site = url
@@ -12,13 +16,13 @@ module BillingFacadeClient
     @site
   end
 
-  @site = ENV['BILLING_FACADE_URL']  
+  @site = ENV['BILLING_FACADE_URL']
 
-  def self.send_event(work_order, name)
+  def send_event(work_order, name)
     r = connection.post("/events", {eventName: name, workOrderId: work_order.id}.to_json)
     return true if r.status==200
     return false
-  end
+  end  
 
   def self.validate_single_value(path)
     r = connection.get(path)
@@ -28,7 +32,7 @@ module BillingFacadeClient
   end
 
   def self.validate_multiple_values(path, params)
-    r = connection.post(path, params.to_json )
+    r = connection.post(path, params.to_json)
     return [] if r.status==200
     response = JSON.parse(r.body, symbolize_names: true)
     invalid_cost_codes = response.keys.select{|cost_code| !response[cost_code] }
