@@ -5,9 +5,8 @@ module BillingFacadeClient
     # - It does not contain any errors
     # - The Cost code and Module name in the response match the arguments provided
     # - The Price obtained is a valid numeric value
-    def validate_response_cost_for_module_name(response, product_name, module_name, cost_code)
+    def validate_response_cost_for_module_name(response,  module_name, cost_code)
       !!((response) && (!response[:errors]) && 
-        (response[:product] == product_name) &&
         (response[:cost_code] == cost_code) && (response[:module] == module_name) &&
         (price_is_valid?(response[:price])))
     end
@@ -15,7 +14,7 @@ module BillingFacadeClient
     # Given a product name and a module name for it, and a cost code, it performs a query to the billing
     # facade service and returns the price value
     def get_cost_information_for_module(product_name, module_name, cost_code)
-      r = connection.post("/price_for_module", msg_request_cost_information_for_module(cost_code, module_name))
+      r = connection.post("/price_for_module", msg_request_cost_information_for_module(module_name, cost_code))
       response = JSON.parse(r.body, symbolize_names: true)
       if validate_response_cost_for_module_name(response)
         return BigDecimal.new(response[:price])
@@ -25,9 +24,8 @@ module BillingFacadeClient
     end
 
     # Generates a valid request JSON to ask for a price to the billing facade for a module and costcode
-    def msg_request_cost_information_for_module(product_name, module_name, cost_code)
+    def msg_request_cost_information_for_module(module_name, cost_code)
       obj = {}
-      obj[:product] = product_name
       obj[:module] = module_name      
       obj[:cost_code] = cost_code
       obj.to_json
