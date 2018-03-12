@@ -13,7 +13,7 @@ module BillingFacadeClient
 
     # Given a product name and a module name for it, and a cost code, it performs a query to the billing
     # facade service and returns the price value
-    def get_cost_information_for_module(product_name, module_name, cost_code)
+    def get_cost_information_for_module(module_name, cost_code)
       r = connection.post("/price_for_module", msg_request_cost_information_for_module(module_name, cost_code))
       response = JSON.parse(r.body, symbolize_names: true)
       if validate_response_cost_for_module_name(response)
