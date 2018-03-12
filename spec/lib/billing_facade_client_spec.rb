@@ -19,12 +19,12 @@ RSpec.describe('BillingFacadeClient') do
     context '#validate_response_cost_for_module_name' do
 
       it 'returns false if the cost code do not match' do
-        response = { cost_code: 'random','module': module_name}
+        response = { cost_code: 'random','module': module_name, price: '1234'}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
            module_name, cost_code)).to eq(false)
       end
       it 'returns false if the module name do not match' do
-        response = { 'module': 'random', cost_code: cost_code}
+        response = { 'module': 'random', cost_code: cost_code, price: '1234'}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           module_name, cost_code)).to eq(false)        
       end
@@ -34,7 +34,7 @@ RSpec.describe('BillingFacadeClient') do
           module_name, cost_code)).to eq(false)
       end
       it 'returns false if the response does not have a price' do
-        response = { cost_code: cost_code, 'module': module_name,  }
+        response = { cost_code: cost_code, 'module': module_name}
         expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
           module_name, cost_code)).to eq(false)
       end
