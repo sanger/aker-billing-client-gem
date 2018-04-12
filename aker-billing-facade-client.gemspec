@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "billing_facade_client/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "aker-billing-facade-client"
+  spec.name          = "aker_billing_client"
   spec.version       = BillingFacadeClient::VERSION
   spec.authors       = ["Eduardo Martin Rojo"]
   spec.email         = ["emr@sanger.ac.uk"]
