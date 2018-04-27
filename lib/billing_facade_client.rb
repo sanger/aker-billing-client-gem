@@ -21,7 +21,7 @@ module BillingFacadeClient
   @site = ENV['BILLING_FACADE_URL']
 
   def self.send_event(work_order, name)
-    r = connection.post("/events", {eventName: name, workOrderId: work_order.id}.to_json)
+    r = connection.post("events", {eventName: name, workOrderId: work_order.id}.to_json)
     return true if r.status==200
     return false
   end
@@ -42,7 +42,7 @@ module BillingFacadeClient
   end
 
   def self.get_cost_information_for_products(cost_code, product_names)
-    r = connection.post("/accounts/#{cost_code}/unit_price", product_names.to_json)
+    r = connection.post("accounts/#{cost_code}/unit_price", product_names.to_json)
     response = JSON.parse(r.body, symbolize_names: true)
     return response
   end
@@ -57,27 +57,27 @@ module BillingFacadeClient
   end
 
   def self.validate_process_module_name(module_name)
-    r = connection.get("/modules/#{module_name}/verifyname")
+    r = connection.get("modules/#{module_name}/verifyname")
     response = JSON.parse(r.body, symbolize_names: true)
     return response[:verified]
   end
 
   def self.get_sub_cost_codes(cost_code)
-    r = connection.get("/accounts/#{cost_code}/subaccountcodes")
+    r = connection.get("accounts/#{cost_code}/subaccountcodes")
     response = JSON.parse(r.body, symbolize_names: true)
     return response[:subCostCodes]
   end
 
   def self.validate_product_name?(product_name)
-    validate_single_value("/products/#{product_name}/verify")
+    validate_single_value("products/#{product_name}/verify")
   end
 
   def self.validate_project_cost_code?(cost_code)
-    validate_single_value("/accounts/#{cost_code}/verify")
+    validate_single_value("accounts/#{cost_code}/verify")
   end
 
   def self.validate_subproject_cost_code?(cost_code)
-    validate_single_value("/subaccountcodes/#{cost_code}/verify")
+    validate_single_value("subaccountcodes/#{cost_code}/verify")
   end
 
   def self.validate_cost_code?(cost_code)
@@ -85,11 +85,11 @@ module BillingFacadeClient
   end
 
   def self.filter_invalid_cost_codes(cost_codes)
-    validate_multiple_values("/accounts/verify", {accounts: cost_codes})
+    validate_multiple_values("accounts/verify", {accounts: cost_codes})
   end
 
   def self.filter_invalid_product_names(product_names_list)
-    validate_multiple_values("/catalogue/verify", {products: product_names_list})
+    validate_multiple_values("catalogue/verify", {products: product_names_list})
   end
 
   def self.connection
