@@ -1,7 +1,7 @@
 module BillingFacadeClient
   class CostCodeValidator < ActiveModel::Validator
     SPLIT_CHARACTER = '-'
-    COST_CODE_REGEXP_STR = "\\AS[0-9]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[0-9]{1,2})?\\z"
+    COST_CODE_REGEXP_STR = "\\A[S,G][0-9]{4}(#{BillingFacadeClient::CostCodeValidator::SPLIT_CHARACTER}[0-9]{1,2})?\\z"
 
     def cost_code_regexp
       @cost_code_regexp ||= Regexp.new(COST_CODE_REGEXP_STR)
@@ -30,7 +30,7 @@ module BillingFacadeClient
           record.errors[:cost_code] << "The connection with the Billing service failed"
         end
       end
-    end    
+    end
   end
 
 end

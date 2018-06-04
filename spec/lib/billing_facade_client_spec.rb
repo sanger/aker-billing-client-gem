@@ -20,32 +20,32 @@ RSpec.describe('BillingFacadeClient') do
 
       it 'returns false if the cost code do not match' do
         response = { cost_code: 'random','module': module_name, price: '1234'}
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
            module_name, cost_code)).to eq(false)
       end
       it 'returns false if the module name do not match' do
         response = { 'module': 'random', cost_code: cost_code, price: '1234'}
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
-          module_name, cost_code)).to eq(false)        
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
+          module_name, cost_code)).to eq(false)
       end
       it 'returns false if the response has some errors' do
         response = { errors: []}
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
           module_name, cost_code)).to eq(false)
       end
       it 'returns false if the response does not have a price' do
         response = { cost_code: cost_code, 'module': module_name}
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
           module_name, cost_code)).to eq(false)
       end
       it 'returns false if the price does not have the right format' do
         response = { cost_code: cost_code, 'module': module_name, price: '1234abc'}
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
            module_name, cost_code)).to eq(false)
-      end      
+      end
       it 'returns true in other cases' do
         response = { cost_code: cost_code, 'module': module_name, price: '1234', }
-        expect(BillingFacadeClient.validate_response_cost_for_module_name(response, 
+        expect(BillingFacadeClient.validate_response_cost_for_module_name(response,
           module_name, cost_code)).to eq(true)
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe('BillingFacadeClient') do
     context 'when the status received is 200' do
       before do
         stub_request(:get, url).
-          to_return(status: 200, body: {verified: true }.to_json)        
+          to_return(status: 200, body: {verified: true }.to_json)
       end
       it 'returns the value of the field verified' do
         expect(BillingFacadeClient.validate_single_value(path)).to eq(true)
@@ -70,7 +70,7 @@ RSpec.describe('BillingFacadeClient') do
       before do
         stub_request(:get, url).
           to_return(status: 404, body: nil)
-      end      
+      end
       it 'returns false' do
         expect(BillingFacadeClient.validate_single_value(path)).to eq(false)
       end
@@ -85,18 +85,18 @@ RSpec.describe('BillingFacadeClient') do
     context 'when the status received is not 200' do
       it 'returns the list of keys of the object whom value is false' do
         stub_request(:post, url).with(body: params.to_json).
-          to_return(status: 400, body: {'a': false, 'b': true, 'c': false }.to_json)        
+          to_return(status: 400, body: {'a': false, 'b': true, 'c': false }.to_json)
         expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([:a,:c])
       end
       it 'returns an empty list when the object obtained is empty' do
         stub_request(:post, url).with(body: params.to_json).
-          to_return(status: 400, body: {}.to_json)        
-        expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([])        
+          to_return(status: 400, body: {}.to_json)
+        expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([])
       end
       it 'returns an empty list when the object obtained does not have invalid values' do
         stub_request(:post, url).with(body: params.to_json).
-          to_return(status: 400, body: {'a': true, 'b': true, 'c': true }.to_json)        
-        expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([])        
+          to_return(status: 400, body: {'a': true, 'b': true, 'c': true }.to_json)
+        expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([])
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe('BillingFacadeClient') do
       before do
         stub_request(:post, url).with(body: params.to_json).
           to_return(status: 200, body: {'a': false, 'b': true, 'c': false }.to_json)
-      end      
+      end
       it 'returns an empty list' do
         expect(BillingFacadeClient.validate_multiple_values(path, params)).to eq([])
       end
@@ -168,29 +168,29 @@ RSpec.describe('BillingFacadeClient') do
   end
   context '#validate_product_name?' do
     it 'validates using the url' do
-      expect(BillingFacadeClient).to receive(:validate_single_value).with('/products/product1/verify')
+      expect(BillingFacadeClient).to receive(:validate_single_value).with('products/product1/verify')
       BillingFacadeClient.validate_product_name?('product1')
     end
   end
   context '#validate_cost_code?' do
     it 'validates using the url' do
-      expect(BillingFacadeClient).to receive(:validate_single_value).with('/subaccountcodes/cost1/verify')
+      expect(BillingFacadeClient).to receive(:validate_single_value).with('subaccountcodes/cost1/verify')
       BillingFacadeClient.validate_cost_code?('cost1')
-    end    
+    end
   end
   context '#filter_invalid_cost_codes' do
     it 'validates using the url' do
       cost_codes = ['a','b']
-      expect(BillingFacadeClient).to receive(:validate_multiple_values).with('/accounts/verify', {accounts: cost_codes})
+      expect(BillingFacadeClient).to receive(:validate_multiple_values).with('accounts/verify', {accounts: cost_codes})
       BillingFacadeClient.filter_invalid_cost_codes(cost_codes)
-    end    
+    end
   end
   context '#filter_invalid_product_names' do
     it 'validates using the url' do
       product_names = ['a','b']
-      expect(BillingFacadeClient).to receive(:validate_multiple_values).with('/catalogue/verify', {products: product_names})
+      expect(BillingFacadeClient).to receive(:validate_multiple_values).with('catalogue/verify', {products: product_names})
       BillingFacadeClient.filter_invalid_product_names(product_names)
-    end        
+    end
   end
   context '#connection' do
     it 'creates a new connection' do
