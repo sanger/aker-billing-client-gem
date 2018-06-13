@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    aker-billing-facade-client (0.1.7)
+    aker-billing-facade-client (0.1.8)
       activemodel
       faraday
 
@@ -63,4 +63,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.0
+   1.16.2
