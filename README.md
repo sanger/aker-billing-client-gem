@@ -1,4 +1,8 @@
-# BillingFacadeClient
+# Aker - Billing client gem
+
+[![Build Status](https://travis-ci.org/sanger/aker-billing-client-gem.svg?branch=master)](https://travis-ci.org/sanger/aker-billing-client-gem)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6dc95a7cae112e5da249/maintainability)](https://codeclimate.com/github/sanger/aker-billing-client-gem/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6dc95a7cae112e5da249/test_coverage)](https://codeclimate.com/github/sanger/aker-billing-client-gem/test_coverage)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/aker/billing/facade/client`. To experiment with that code, run `bin/console` for an interactive prompt.
 
