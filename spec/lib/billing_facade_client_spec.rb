@@ -10,6 +10,7 @@ RSpec.describe('BillingFacadeClient') do
 
   before do
     BillingFacadeClient.site=billing_url
+    BillingFacadeClient.ubw_site=billing_url
   end
 
   describe 'CostForModule' do
@@ -172,12 +173,6 @@ RSpec.describe('BillingFacadeClient') do
       BillingFacadeClient.validate_product_name?('product1')
     end
   end
-  context '#validate_cost_code?' do
-    it 'validates using the url' do
-      expect(BillingFacadeClient).to receive(:validate_single_value).with('/subaccountcodes/cost1/verify')
-      BillingFacadeClient.validate_cost_code?('cost1')
-    end    
-  end
   context '#filter_invalid_cost_codes' do
     it 'validates using the url' do
       cost_codes = ['a','b']
@@ -198,4 +193,38 @@ RSpec.describe('BillingFacadeClient') do
       BillingFacadeClient.connection
     end
   end
+
+  ### UBW integration
+  context '#validate_cost_code?' do
+    let(:path) { '/subaccounts/cost1'}
+    let(:url) {billing_url + path }
+
+    it 'validates using the url' do
+      stub_request(:get, url).
+        to_return(status: 200, body: {costCode: 'cost1', isActive: true}.to_json)
+
+      expect(BillingFacadeClient.validate_cost_code?('cost1')).to eq(true)
+    end    
+  end
+  context '#get_sub_cost_codes' do
+    let(:path) { '/accounts/cost1/subaccounts'}
+    let(:url) {billing_url + path }
+
+    it 'returns the list of sub cost codes for a cost code' do
+      data = [{costCode: 'cost2', isActive: true},{costCode: 'cost3', isActive: true}]
+      stub_request(:get, url).
+        to_return(status: 200, body: data.to_json)
+
+      expect(BillingFacadeClient.get_sub_cost_codes('cost1')).to eq(['cost2', 'cost3'])
+    end        
+  end
+  context '#ubw_connection' do
+    it 'creates a new connection' do
+      expect(Faraday).to receive(:new)
+      BillingFacadeClient.ubw_connection
+    end
+  end
+
+
+
 end

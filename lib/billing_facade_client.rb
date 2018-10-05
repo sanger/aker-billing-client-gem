@@ -12,11 +12,20 @@ module BillingFacadeClient
     @site = url
   end
 
+  def self.ubw_site=(url)
+    @ubw_site = url
+  end
+
   def self.site
     @site
   end
 
+  def self.ubw_site
+    @ubw_site
+  end  
+
   @site = ENV['BILLING_FACADE_URL']
+  @ubw_site = ENV['UBW_URL']
 
   def send_event(work_order, name)
     r = connection.post("/events", {eventName: name, workOrderId: work_order.id}.to_json)
@@ -54,18 +63,8 @@ module BillingFacadeClient
     end
   end
 
-  def self.get_sub_cost_codes(cost_code)
-    r = connection.get("/accounts/#{cost_code}/subaccountcodes")
-    response = JSON.parse(r.body, symbolize_names: true)
-    return response[:subCostCodes]
-  end
-
   def self.validate_product_name?(product_name)
     validate_single_value("/products/#{product_name}/verify")
-  end
-
-  def self.validate_cost_code?(cost_code)
-    validate_single_value("/subaccountcodes/#{cost_code}/verify")
   end
 
   def self.filter_invalid_cost_codes(cost_codes)
@@ -79,5 +78,25 @@ module BillingFacadeClient
   def self.connection
     Faraday.new(:url => site, ssl: { verify: false },
       headers: {'Content-Type': 'application/json', "Accept" => "application/json"})
+  end
+
+
+  ## UBW service integration
+  def self.validate_cost_code?(cost_code)
+    r = ubw_connection.get("/subaccounts/#{cost_code}")
+    return false unless r.status == 200
+    response = JSON.parse(r.body, symbolize_names: true)
+    return response[:isActive]
+  end
+
+  def self.get_sub_cost_codes(cost_code)
+    r = ubw_connection.get("/accounts/#{cost_code}/subaccounts")
+    response = JSON.parse(r.body, symbolize_names: true)
+    return response.map{|account| account[:costCode] }
+  end  
+
+  def self.ubw_connection
+    Faraday.new(:url => ubw_site, ssl: { verify: false },
+      headers: {'Content-Type': 'application/json', "Accept" => "application/json"})    
   end
 end
