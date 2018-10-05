@@ -77,11 +77,7 @@ module BillingFacadeClient
   end
 
   def self.validate_subproject_cost_code?(cost_code)
-    validate_single_value("subaccountcodes/#{cost_code}/verify")
-  end
-
-  def self.validate_cost_code?(cost_code)
-    validate_subproject_cost_code?(cost_code)
+    validate_cost_code?(cost_code)
   end
 
   def self.filter_invalid_cost_codes(cost_codes)
