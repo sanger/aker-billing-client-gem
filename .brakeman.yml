@@ -1,0 +1,12 @@
+---
+version: "2"
+plugins:
+  brakeman:
+    enabled: true
+  fixme:
+    enabled: true
+  reek:
+    enabled: true
+  rubocop:
+    enabled: true
+
