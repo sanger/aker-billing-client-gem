@@ -2,7 +2,7 @@
 version: "2"
 plugins:
   brakeman:
-    enabled: true
+    enabled: false
   fixme:
     enabled: true
   reek:
