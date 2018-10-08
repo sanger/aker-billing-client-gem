@@ -1,10 +1,6 @@
 ---
 version: "2"
 plugins:
-  brakeman:
-    enabled: true
-    config:
-      app_path: .
   fixme:
     enabled: true
   reek:
