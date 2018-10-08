@@ -195,6 +195,35 @@ RSpec.describe('BillingFacadeClient') do
   end
 
   ### UBW integration
+  context '#validate_project_cost_code?' do
+    let(:path) { '/accounts/cost1/subaccounts'}
+    let(:url) {billing_url + path }
+
+    it 'validates a project if it contains a subproject that is active' do
+      stub_request(:get, url).
+        to_return(status: 200, body: [{costCode: 'cost2', isActive: false},{costCode: 'cost3', isActive: true}].to_json)
+
+      expect(BillingFacadeClient.validate_project_cost_code?('cost1')).to eq(true)
+    end
+    it 'does not validate a project if it does not contain at least a subproject that is active' do
+      stub_request(:get, url).
+        to_return(status: 200, body: [{costCode: 'cost2', isActive: false},{costCode: 'cost3', isActive: false}].to_json)
+
+      expect(BillingFacadeClient.validate_project_cost_code?('cost1')).to eq(false)
+    end    
+  end
+  context '#validate_subproject_cost_code?' do
+    let(:path) { '/subaccounts/cost1'}
+    let(:url) {billing_url + path }
+
+    it 'validates using the url' do
+      stub_request(:get, url).
+        to_return(status: 200, body: {costCode: 'cost1', isActive: true}.to_json)
+
+      expect(BillingFacadeClient.validate_cost_code?('cost1')).to eq(true)
+    end    
+  end
+
   context '#validate_cost_code?' do
     let(:path) { '/subaccounts/cost1'}
     let(:url) {billing_url + path }
