@@ -72,18 +72,6 @@ module BillingFacadeClient
     validate_single_value("products/#{product_name}/verify")
   end
 
-  def self.validate_project_cost_code?(cost_code)
-    validate_single_value("accounts/#{cost_code}/verify")
-  end
-
-  def self.validate_subproject_cost_code?(cost_code)
-    validate_single_value("subaccountcodes/#{cost_code}/verify")
-  end
-
-  def self.validate_cost_code?(cost_code)
-    validate_subproject_cost_code?(cost_code)
-  end
-
   def self.filter_invalid_cost_codes(cost_codes)
     validate_multiple_values("accounts/verify", {accounts: cost_codes})
   end
@@ -107,6 +95,16 @@ module BillingFacadeClient
 
   def self.ubw_site
     @ubw_site
+  end  
+
+  def self.validate_project_cost_code?(cost_code)
+    r = ubw_connection.get("/accounts/#{cost_code}/subaccounts")
+    response = JSON.parse(r.body, symbolize_names: true)
+    return response.any?{|account| account[:isActive] }
+  end
+
+  def self.validate_subproject_cost_code?(cost_code)
+    validate_cost_code?(cost_code)
   end  
 
   def self.validate_cost_code?(cost_code)
